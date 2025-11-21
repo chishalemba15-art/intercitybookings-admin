@@ -2,7 +2,7 @@ import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from 'bcryptjs';
 import { db } from './db';
-import { adminUsers } from '../../../src/db/schema';
+import { adminUsers } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
 export const authOptions: NextAuthOptions = {
@@ -13,7 +13,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials) {
+      async authorize(credentials, _req) {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
@@ -49,7 +49,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id.toString(),
           email: user.email,
           name: user.name,
-          role: user.role,
+          role: user.role || undefined,
         };
       },
     }),
