@@ -1,0 +1,218 @@
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                                                                           ║
+║                    AGENT SYSTEM - QUICK REFERENCE CARD                   ║
+║                                                                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+👤 TEST AGENT LOGIN CREDENTIALS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Agent ID:          10
+  Phone:             +260979010638
+  PIN:               1234
+  Name:              Test Agent
+
+  Login Command:
+  ┌──────────────────────────────────────────────────────────────┐
+  │ curl -X POST http://localhost:3001/api/agent/login \         │
+  │   -H "Content-Type: application/json" \                      │
+  │   -d '{"phoneNumber":"+260979010638","pin":"1234"}'          │
+  └──────────────────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💰 DASHBOARD SNAPSHOT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Balance:           148 ZMW
+  Daily Quota:       49/50 requests
+  Cost per Request:  2 ZMW
+  
+  Tier:              Bronze
+  Next Tier:         Silver (50 requests needed)
+  
+  Referral Code:     AG000010
+  Referrals Made:    1
+  Bonus Earned:      50 ZMW
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔗 CRITICAL API ENDPOINTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  AUTHENTICATION:
+  ├─ POST   /api/agent/login                 ⭐ NEW
+  └─ POST   /api/agent/set-pin               ⭐ NEW
+
+  FLOAT:
+  ├─ GET    /api/agent/float/balance
+  ├─ POST   /api/agent/float/purchase
+  └─ GET    /api/agent/float/history
+
+  REQUESTS:
+  ├─ GET    /api/agent/requests
+  └─ POST   /api/agent/requests/[id]/claim
+
+  TICKETS:
+  ├─ POST   /api/agent/tickets/upload-receipt
+  └─ GET    /api/agent/tickets
+
+  GROWTH:
+  ├─ GET    /api/agent/performance
+  ├─ GET    /api/agent/referrals
+  ├─ POST   /api/agent/referrals
+  └─ GET    /api/agent/bonuses
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 QUICK TEST COMMANDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Check Balance:
+  curl "http://localhost:3001/api/agent/float/balance?agentId=10"
+
+  View Requests:
+  curl "http://localhost:3001/api/agent/requests?agentId=10&limit=5"
+
+  Get Referral Code:
+  curl "http://localhost:3001/api/agent/referrals?agentId=10"
+
+  Check Tier:
+  curl "http://localhost:3001/api/agent/performance?agentId=10"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 AGENT WORKFLOW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  1. Login with PIN
+     ↓
+  2. View Dashboard
+     ↓
+  3. See Available Requests
+     ↓
+  4. Claim Request (costs 2 ZMW)
+     ↓
+  5. Contact Customer
+     ↓
+  6. Upload Receipt Photo
+     ↓
+  7. Admin Verifies
+     ↓
+  8. Earn Booking Commission
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📈 TIER PROGRESSION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Bronze (0 requests)
+  • Cost: 2.00 ZMW per request
+  • Bonus: 0% float bonus
+  ↓
+  Silver (50 requests)
+  • Cost: 1.50 ZMW per request (-25%)
+  • Bonus: 10% float bonus
+  ↓
+  Gold (200 requests)
+  • Cost: 1.00 ZMW per request (-50%)
+  • Bonus: 20% float bonus
+  ↓
+  Platinum (500 requests)
+  • Cost: 0.50 ZMW per request (-75%)
+  • Bonus: 30% float bonus
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 REFERRAL MECHANICS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Share your code: AG000010
+  
+  When someone registers with your code:
+  • You get: +50 ZMW bonus
+  • They get: +50 ZMW bonus
+  
+  Requirements:
+  • Both agents must be approved
+  • Each referral is counted once
+  • Bonuses credited immediately
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 DOCUMENTATION FILES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  AGENT_LOGIN_SUMMARY.md              - Quick reference
+  AGENT_LOGIN_DASHBOARD_GUIDE.md      - Detailed guide
+  AGENT_TEST_CREDENTIALS.md           - Test agents
+  COMPLETE_SYSTEM_SUMMARY.md          - Full summary
+  TESTING_MODE_ENABLED.md             - OTP setup
+  NEON_HTTP_COMPATIBILITY_FIX.md      - DB compatibility
+  AGENT_SYSTEM_COMPLETE.md            - Architecture
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ SYSTEM FEATURES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ✅ Agent Registration          ✅ Float Management
+  ✅ OTP Verification            ✅ Request Discovery
+  ✅ Admin Approval              ✅ Request Claiming
+  ✅ Agent Login                 ✅ Receipt Upload
+  ✅ Dashboard Access            ✅ Receipt Verification
+  ✅ Referral System             ✅ Growth Mechanics
+  ✅ Performance Tiers           ✅ Bonus Programs
+  ✅ Transaction History         ✅ Neon HTTP Compatible
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚙️ PRODUCTION CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Before deploying:
+  ☐ Disable test mode OTP
+  ☐ Integrate SMS provider
+  ☐ Integrate payment gateway
+  ☐ Remove hardcoded PINs
+  ☐ Implement PIN hashing
+  ☐ Add rate limiting
+  ☐ Setup monitoring
+  ☐ Enable HTTPS
+  ☐ Add error logging
+  ☐ Implement 2FA
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 GET STARTED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  1. Copy test agent credentials above
+  2. Run login command in terminal
+  3. Use returned token for subsequent requests
+  4. Explore dashboard features
+  5. Test complete workflows
+  6. Review documentation
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💻 TECH STACK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Framework:     Next.js 14
+  Database:      PostgreSQL (Neon HTTP)
+  ORM:           Drizzle ORM
+  Auth:          PIN-based + NextAuth
+  Validation:    Zod
+  Forms:         React Hook Form
+  Styling:       TailwindCSS
+  Finance:       Decimal.js
+  Status:        ✅ FULLY TESTED
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                                                                           ║
+║              🎉 READY FOR DEVELOPMENT & INTEGRATION 🎉                   ║
+║                                                                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
-import { bookings, buses, searchAnalytics, routes } from '../../../../../../src/db/schema';
+import { bookings, buses, searchAnalytics, routes } from '@/db/schema';
 import { count, desc, eq, sql } from 'drizzle-orm';
 
 export async function GET() {
