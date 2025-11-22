@@ -2,10 +2,7 @@ import { db } from '@/lib/db';
 import { agents } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
-
-// Simulated PIN storage (in production, use secure hashing and database)
-// This is imported from login route for consistency
-const agentPINs = new Map<number, string>();
+import { agentPINs } from '@/lib/agent-pins';
 
 export async function POST(request: Request) {
   try {
@@ -82,6 +79,3 @@ export async function POST(request: Request) {
     );
   }
 }
-
-// Export agentPINs so login route can access it
-export { agentPINs };

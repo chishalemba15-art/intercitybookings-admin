@@ -2,15 +2,7 @@ import { db } from '@/lib/db';
 import { agents } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
-
-// Simulated PIN storage (in production, use secure hashing and database)
-// Shared with set-pin endpoint
-const agentPINs = new Map<number, string>();
-
-// Default test PIN for development
-agentPINs.set(10, '1234'); // Agent 10 (Test Agent)
-agentPINs.set(11, '1234'); // Agent 11
-agentPINs.set(12, '1234'); // Agent 12
+import { agentPINs } from '@/lib/agent-pins';
 
 export async function POST(request: Request) {
   try {
