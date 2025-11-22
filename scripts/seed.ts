@@ -1,19 +1,11 @@
 import dotenv from 'dotenv';
 import path from 'path';
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
 import { hash } from 'bcryptjs';
 import * as schema from '../src/db/schema';
+import { db } from '../src/lib/db';
 
 // Load environment variables
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
-
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL environment variable is not set');
-}
-
-const sql = neon(process.env.DATABASE_URL);
-const db = drizzle(sql as any, { schema });
 
 async function seed() {
   try {
