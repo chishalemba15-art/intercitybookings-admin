@@ -803,7 +803,7 @@ async function seed() {
 
     await db
       .insert(schema.agentFloatTransactions)
-      .values(transactions)
+      .values(transactions.filter(t => t.agentId !== undefined))
       .onConflictDoNothing();
 
     // 15. Create Processed Tickets (completed requests)
@@ -829,7 +829,7 @@ async function seed() {
 
     await db
       .insert(schema.agentProcessedTickets)
-      .values(processedTickets)
+      .values(processedTickets.filter(t => t.agentId !== undefined && t.ticketRequestId !== undefined && t.busId !== undefined))
       .onConflictDoNothing();
 
     // 16. Create Performance Tiers
@@ -857,7 +857,7 @@ async function seed() {
 
     await db
       .insert(schema.agentPerformanceTiers)
-      .values(performanceTiers)
+      .values(performanceTiers.filter(t => t.agentId !== undefined))
       .onConflictDoNothing();
 
     // 17. Create Bonuses
@@ -885,7 +885,7 @@ async function seed() {
 
     await db
       .insert(schema.agentBonuses)
-      .values(bonuses)
+      .values(bonuses.filter(b => b.agentId !== undefined))
       .onConflictDoNothing();
 
     // 18. Create Referral Records
@@ -903,7 +903,7 @@ async function seed() {
 
     await db
       .insert(schema.agentReferrals)
-      .values(referrals)
+      .values(referrals.filter(r => r.referrerAgentId !== undefined && r.referredAgentId !== undefined))
       .onConflictDoNothing();
 
     // 19. Create Daily Quota Logs
@@ -929,7 +929,7 @@ async function seed() {
 
     await db
       .insert(schema.agentDailyQuotaLogs)
-      .values(quotaLogs)
+      .values(quotaLogs.filter(q => q.agentId !== undefined))
       .onConflictDoNothing();
 
     console.log('✅ Database seeded successfully!');
