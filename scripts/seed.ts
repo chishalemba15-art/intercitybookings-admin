@@ -13,7 +13,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 const sql = neon(process.env.DATABASE_URL);
-const db = drizzle(sql, { schema });
+const db = drizzle(sql as any, { schema });
 
 async function seed() {
   try {
