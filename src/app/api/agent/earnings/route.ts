@@ -4,7 +4,7 @@ import { eq, and, gte } from 'drizzle-orm';
 import * as schema from '@/db/schema';
 
 const sql = neon(process.env.DATABASE_URL!);
-const db = drizzle(sql, { schema });
+const db = drizzle(sql as any, { schema });
 
 export async function GET(request: Request) {
   try {

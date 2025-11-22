@@ -1,19 +1,11 @@
 import dotenv from 'dotenv';
 import path from 'path';
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
 import { hash } from 'bcryptjs';
 import * as schema from '../src/db/schema';
+import { db } from '../src/lib/db';
 
 // Load environment variables
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
-
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL environment variable is not set');
-}
-
-const sql = neon(process.env.DATABASE_URL);
-const db = drizzle(sql, { schema });
 
 async function seed() {
   try {
@@ -30,7 +22,7 @@ async function seed() {
           description: 'Premium luxury bus service across Southern Africa',
           logo: 'https://via.placeholder.com/200x100?text=Juldan',
           color: 'bg-blue-600',
-          rating: 4.8,
+          rating: '4.8',
           phone: '+260211123456',
           email: 'info@juldan.zm',
           isActive: true,
@@ -41,7 +33,7 @@ async function seed() {
           description: 'Affordable and reliable intercity bus service',
           logo: 'https://via.placeholder.com/200x100?text=Mazhandu',
           color: 'bg-red-600',
-          rating: 4.5,
+          rating: '4.5',
           phone: '+260211234567',
           email: 'booking@mazhandu.zm',
           isActive: true,
@@ -52,7 +44,7 @@ async function seed() {
           description: 'Fast and comfortable long-distance travel',
           logo: 'https://via.placeholder.com/200x100?text=ZE+Coaches',
           color: 'bg-yellow-600',
-          rating: 4.6,
+          rating: '4.6',
           phone: '+260211345678',
           email: 'contact@zeagle.zm',
           isActive: true,
@@ -63,7 +55,7 @@ async function seed() {
           description: 'Budget-friendly intercity transportation',
           logo: 'https://via.placeholder.com/200x100?text=City+Cruiser',
           color: 'bg-green-600',
-          rating: 4.3,
+          rating: '4.3',
           phone: '+260211456789',
           email: 'info@citycruiser.zm',
           isActive: true,
@@ -152,7 +144,7 @@ async function seed() {
         routeId: allRoutes[0].id,
         departureTime: '06:00',
         arrivalTime: '14:00',
-        price: 850,
+        price: '850.00',
         type: 'luxury' as const,
         totalSeats: 32,
         availableSeats: 28,
@@ -164,7 +156,7 @@ async function seed() {
         routeId: allRoutes[0].id,
         departureTime: '14:00',
         arrivalTime: '22:00',
-        price: 850,
+        price: '850.00',
         type: 'luxury' as const,
         totalSeats: 32,
         availableSeats: 15,
@@ -176,7 +168,7 @@ async function seed() {
         routeId: allRoutes[0].id,
         departureTime: '07:30',
         arrivalTime: '15:30',
-        price: 650,
+        price: '650.00',
         type: 'standard' as const,
         totalSeats: 52,
         availableSeats: 40,
@@ -188,7 +180,7 @@ async function seed() {
         routeId: allRoutes[1].id,
         departureTime: '05:30',
         arrivalTime: '13:00',
-        price: 750,
+        price: '750.00',
         type: 'luxury' as const,
         totalSeats: 40,
         availableSeats: 32,
@@ -200,7 +192,7 @@ async function seed() {
         routeId: allRoutes[1].id,
         departureTime: '08:00',
         arrivalTime: '15:30',
-        price: 580,
+        price: '580.00',
         type: 'standard' as const,
         totalSeats: 52,
         availableSeats: 22,
@@ -212,7 +204,7 @@ async function seed() {
         routeId: allRoutes[2].id,
         departureTime: '06:00',
         arrivalTime: '14:00',
-        price: 620,
+        price: '620.00',
         type: 'standard' as const,
         totalSeats: 48,
         availableSeats: 38,
@@ -224,7 +216,7 @@ async function seed() {
         routeId: allRoutes[2].id,
         departureTime: '15:00',
         arrivalTime: '23:00',
-        price: 900,
+        price: '900.00',
         type: 'luxury' as const,
         totalSeats: 32,
         availableSeats: 25,
@@ -236,7 +228,7 @@ async function seed() {
         routeId: allRoutes[4].id,
         departureTime: '07:00',
         arrivalTime: '09:00',
-        price: 250,
+        price: '250.00',
         type: 'standard' as const,
         totalSeats: 60,
         availableSeats: 45,
@@ -248,7 +240,7 @@ async function seed() {
         routeId: allRoutes[4].id,
         departureTime: '14:00',
         arrivalTime: '16:00',
-        price: 240,
+        price: '240.00',
         type: 'standard' as const,
         totalSeats: 56,
         availableSeats: 35,
@@ -260,7 +252,7 @@ async function seed() {
         routeId: allRoutes[3].id,
         departureTime: '18:00',
         arrivalTime: '03:00',
-        price: 700,
+        price: '700.00',
         type: 'standard' as const,
         totalSeats: 48,
         availableSeats: 28,
@@ -286,7 +278,7 @@ async function seed() {
         seatNumber: 'A1',
         travelDate: new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
         status: 'confirmed' as const,
-        totalAmount: 850,
+        totalAmount: '850.00',
         specialRequests: 'Window seat preferred',
       },
       {
@@ -298,7 +290,7 @@ async function seed() {
         seatNumber: 'A2',
         travelDate: new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000),
         status: 'confirmed' as const,
-        totalAmount: 850,
+        totalAmount: '850.00',
         specialRequests: null,
       },
       {
@@ -310,7 +302,7 @@ async function seed() {
         seatNumber: 'B5',
         travelDate: new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000),
         status: 'confirmed' as const,
-        totalAmount: 650,
+        totalAmount: '650.00',
         specialRequests: 'Aisle seat',
       },
       {
@@ -322,7 +314,7 @@ async function seed() {
         seatNumber: 'C3',
         travelDate: new Date(new Date().getTime() + 1 * 24 * 60 * 60 * 1000),
         status: 'pending' as const,
-        totalAmount: 850,
+        totalAmount: '850.00',
         specialRequests: null,
       },
       {
@@ -334,7 +326,7 @@ async function seed() {
         seatNumber: 'D7',
         travelDate: new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000),
         status: 'completed' as const,
-        totalAmount: 750,
+        totalAmount: '750.00',
         specialRequests: 'Accessible seating',
       },
     ];
@@ -349,7 +341,7 @@ async function seed() {
     const payments = [
       {
         bookingId: allBookings[0].id,
-        amount: 850,
+        amount: '850.00',
         paymentMethod: 'airtel_money' as const,
         paymentStatus: 'completed' as const,
         transactionRef: 'ATL202411001',
@@ -358,7 +350,7 @@ async function seed() {
       },
       {
         bookingId: allBookings[1].id,
-        amount: 850,
+        amount: '850.00',
         paymentMethod: 'mtn_momo' as const,
         paymentStatus: 'completed' as const,
         transactionRef: 'MTN202411001',
@@ -367,7 +359,7 @@ async function seed() {
       },
       {
         bookingId: allBookings[2].id,
-        amount: 650,
+        amount: '650.00',
         paymentMethod: 'airtel_money' as const,
         paymentStatus: 'completed' as const,
         transactionRef: 'ATL202411002',
@@ -376,7 +368,7 @@ async function seed() {
       },
       {
         bookingId: allBookings[3].id,
-        amount: 850,
+        amount: '850.00',
         paymentMethod: 'mtn_momo' as const,
         paymentStatus: 'pending' as const,
         transactionRef: 'MTN202411002',
@@ -811,7 +803,7 @@ async function seed() {
 
     await db
       .insert(schema.agentFloatTransactions)
-      .values(transactions)
+      .values(transactions.filter(t => t.agentId !== undefined))
       .onConflictDoNothing();
 
     // 15. Create Processed Tickets (completed requests)
@@ -837,7 +829,7 @@ async function seed() {
 
     await db
       .insert(schema.agentProcessedTickets)
-      .values(processedTickets)
+      .values(processedTickets.filter(t => t.agentId !== undefined && t.ticketRequestId !== undefined && t.busId !== undefined))
       .onConflictDoNothing();
 
     // 16. Create Performance Tiers
@@ -865,7 +857,7 @@ async function seed() {
 
     await db
       .insert(schema.agentPerformanceTiers)
-      .values(performanceTiers)
+      .values(performanceTiers.filter(t => t.agentId !== undefined))
       .onConflictDoNothing();
 
     // 17. Create Bonuses
@@ -893,7 +885,7 @@ async function seed() {
 
     await db
       .insert(schema.agentBonuses)
-      .values(bonuses)
+      .values(bonuses.filter(b => b.agentId !== undefined))
       .onConflictDoNothing();
 
     // 18. Create Referral Records
@@ -911,7 +903,7 @@ async function seed() {
 
     await db
       .insert(schema.agentReferrals)
-      .values(referrals)
+      .values(referrals.filter(r => r.referrerAgentId !== undefined && r.referredAgentId !== undefined))
       .onConflictDoNothing();
 
     // 19. Create Daily Quota Logs
@@ -937,7 +929,7 @@ async function seed() {
 
     await db
       .insert(schema.agentDailyQuotaLogs)
-      .values(quotaLogs)
+      .values(quotaLogs.filter(q => q.agentId !== undefined))
       .onConflictDoNothing();
 
     console.log('✅ Database seeded successfully!');
