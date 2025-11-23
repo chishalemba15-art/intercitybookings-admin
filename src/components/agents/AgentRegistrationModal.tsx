@@ -25,10 +25,12 @@ interface AgentRegistrationModalProps {
 }
 
 export default function AgentRegistrationModal({ onClose }: AgentRegistrationModalProps) {
-  const [step, setStep] = useState<'form' | 'otp' | 'success'>('form');
+  const [step, setStep] = useState<'form' | 'otp' | 'pin' | 'success'>('form');
   const [loading, setLoading] = useState(false);
   const [phoneToVerify, setPhoneToVerify] = useState('');
   const [otp, setOtp] = useState('');
+  const [pin, setPin] = useState('');
+  const [confirmPin, setConfirmPin] = useState('');
   const [agentId, setAgentId] = useState<number | null>(null);
 
   const {
@@ -84,10 +86,57 @@ export default function AgentRegistrationModal({ onClose }: AgentRegistrationMod
         throw new Error('Invalid OTP');
       }
 
-      setStep('success');
-      toast.success('Registration successful!');
+      setStep('pin');
+      toast.success('Phone verified! Now set your PIN');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'OTP verification failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePinSetup = async () => {
+    if (!pin || !confirmPin) {
+      toast.error('Please enter PIN and confirmation');
+      return;
+    }
+
+    if (pin.length !== 4 || confirmPin.length !== 4) {
+      toast.error('PIN must be exactly 4 digits');
+      return;
+    }
+
+    if (pin !== confirmPin) {
+      toast.error('PINs do not match');
+      return;
+    }
+
+    if (!/^\d{4}$/.test(pin)) {
+      toast.error('PIN must contain only numbers');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await fetch('/api/agent/set-pin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          agentId,
+          phoneNumber: phoneToVerify,
+          pin,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to set PIN');
+      }
+
+      setStep('success');
+      toast.success('Registration completed!');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to set PIN');
     } finally {
       setLoading(false);
     }
@@ -101,6 +150,7 @@ export default function AgentRegistrationModal({ onClose }: AgentRegistrationMod
           <h2 className="text-xl font-bold text-slate-900">
             {step === 'form' && 'Register as Agent'}
             {step === 'otp' && 'Verify Your Phone'}
+            {step === 'pin' && 'Set Your PIN'}
             {step === 'success' && 'Welcome to InterCity!'}
           </h2>
           {step !== 'success' && (
@@ -291,6 +341,61 @@ export default function AgentRegistrationModal({ onClose }: AgentRegistrationMod
 
               <button
                 onClick={() => setStep('form')}
+                className="w-full px-4 py-2 bg-slate-200 text-slate-900 rounded-lg hover:bg-slate-300 font-medium"
+              >
+                Back
+              </button>
+            </div>
+          )}
+
+          {step === 'pin' && (
+            <div className="space-y-4">
+              <p className="text-slate-600">
+                Create a 4-digit PIN to secure your account. You'll use this to login.
+              </p>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Enter 4-Digit PIN
+                </label>
+                <input
+                  type="password"
+                  maxLength={4}
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center text-2xl letter-spacing"
+                  placeholder="••••"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Confirm PIN
+                </label>
+                <input
+                  type="password"
+                  maxLength={4}
+                  value={confirmPin}
+                  onChange={(e) => setConfirmPin(e.target.value.replace(/\D/g, ''))}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center text-2xl letter-spacing"
+                  placeholder="••••"
+                />
+              </div>
+
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-xs text-yellow-900">
+                ⚠️ Remember this PIN! You'll need it to login to your agent dashboard.
+              </div>
+
+              <button
+                onClick={handlePinSetup}
+                disabled={loading || pin.length !== 4 || confirmPin.length !== 4}
+                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50"
+              >
+                {loading ? 'Setting PIN...' : 'Set PIN & Complete'}
+              </button>
+
+              <button
+                onClick={() => setStep('otp')}
                 className="w-full px-4 py-2 bg-slate-200 text-slate-900 rounded-lg hover:bg-slate-300 font-medium"
               >
                 Back

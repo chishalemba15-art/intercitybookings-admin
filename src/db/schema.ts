@@ -3,7 +3,7 @@ import { relations } from 'drizzle-orm';
 
 // Enums
 export const busTypeEnum = pgEnum('bus_type', ['luxury', 'standard']);
-export const bookingStatusEnum = pgEnum('booking_status', ['pending', 'confirmed', 'cancelled', 'completed']);
+export const bookingStatusEnum = pgEnum('booking_status', ['pending', 'confirmed', 'cancelled', 'completed', 'assigned']);
 export const paymentMethodEnum = pgEnum('payment_method', ['airtel_money', 'mtn_momo']);
 export const paymentStatusEnum = pgEnum('payment_status', ['pending', 'completed', 'failed', 'refunded']);
 export const agentStatusEnum = pgEnum('agent_status', ['pending_review', 'approved', 'suspended', 'rejected']);
@@ -12,6 +12,10 @@ export const idTypeEnum = pgEnum('id_type', ['national_id', 'drivers_license', '
 export const transactionTypeEnum = pgEnum('transaction_type', ['purchase', 'refund', 'usage']);
 export const transactionStatusEnum = pgEnum('transaction_status', ['pending', 'completed', 'failed']);
 export const receiptStatusEnum = pgEnum('receipt_status', ['pending', 'verified', 'rejected']);
+export const agentTypeEnum = pgEnum('agent_type', ['tied', 'independent']);
+export const liftPurchaseTypeEnum = pgEnum('lift_purchase_type', ['daily', 'weekly', 'monthly']);
+export const notificationTypeEnum = pgEnum('notification_type', ['new_booking', 'booking_assigned', 'booking_cancelled', 'booking_escalated', 'new_search']);
+export const assignmentStatusEnum = pgEnum('assignment_status', ['pending', 'accepted', 'rejected', 'completed', 'escalated']);
 
 // Operators Table
 export const operators = pgTable('operators', {
@@ -71,6 +75,11 @@ export const bookings = pgTable('bookings', {
   status: bookingStatusEnum('status').default('pending'),
   totalAmount: decimal('total_amount', { precision: 10, scale: 2 }).notNull(),
   specialRequests: text('special_requests'),
+  assignedAgentId: integer('assigned_agent_id').references(() => agents.id),
+  assignedAt: timestamp('assigned_at'),
+  agentNotes: text('agent_notes'),
+  assignmentStatus: assignmentStatusEnum('assignment_status'),
+  assignmentResponseDeadline: timestamp('assignment_response_deadline'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
@@ -214,6 +223,11 @@ export const agents = pgTable('agents', {
   locationCity: varchar('location_city', { length: 100 }),
   locationAddress: varchar('location_address', { length: 255 }),
   referralCode: varchar('referral_code', { length: 20 }).unique(),
+  pinHash: varchar('pin_hash', { length: 255 }), // Bcrypt hashed 4-digit PIN
+  agentType: agentTypeEnum('agent_type').default('tied'), // tied or independent
+  primaryOperatorId: integer('primary_operator_id').references(() => operators.id), // Primary operator for tied agents
+  isOnline: boolean('is_online').default(false),
+  lastActiveAt: timestamp('last_active_at'),
   status: agentStatusEnum('status').default('pending_review'),
   approvedBy: integer('approved_by').references(() => adminUsers.id),
   approvedAt: timestamp('approved_at'),
@@ -434,3 +448,147 @@ export type AgentPerformanceTier = typeof agentPerformanceTiers.$inferSelect;
 export type NewAgentPerformanceTier = typeof agentPerformanceTiers.$inferInsert;
 export type AgentBonus = typeof agentBonuses.$inferSelect;
 export type NewAgentBonus = typeof agentBonuses.$inferInsert;
+
+// Agent-Operator Assignments (for independent agents with multiple operators)
+export const agentOperatorAssignments = pgTable('agent_operator_assignments', {
+  id: serial('id').primaryKey(),
+  agentId: integer('agent_id').references(() => agents.id).notNull(),
+  operatorId: integer('operator_id').references(() => operators.id).notNull(),
+  assignedAt: timestamp('assigned_at').defaultNow(),
+  assignedBy: integer('assigned_by').references(() => adminUsers.id),
+  isActive: boolean('is_active').default(true),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+// Agent Lifts System (tokens for accessing search analytics)
+export const agentLifts = pgTable('agent_lifts', {
+  id: serial('id').primaryKey(),
+  agentId: integer('agent_id').references(() => agents.id).notNull().unique(),
+  currentBalance: integer('current_balance').default(0),
+  totalPurchased: integer('total_purchased').default(0),
+  totalUsed: integer('total_used').default(0),
+  lastPurchaseAt: timestamp('last_purchase_at'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+// Lifts Purchase Transactions
+export const liftsTransactions = pgTable('lifts_transactions', {
+  id: serial('id').primaryKey(),
+  agentId: integer('agent_id').references(() => agents.id).notNull(),
+  purchaseType: liftPurchaseTypeEnum('purchase_type').notNull(), // daily, weekly, monthly
+  liftsAmount: integer('lifts_amount').notNull(),
+  priceZmw: decimal('price_zmw', { precision: 10, scale: 2 }).notNull(),
+  paymentMethod: paymentMethodEnum('payment_method'),
+  paymentReference: varchar('payment_reference', { length: 100 }),
+  status: transactionStatusEnum('status').default('pending'),
+  expiresAt: timestamp('expires_at'), // For daily/weekly/monthly subscriptions
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+// Lifts Usage Logs
+export const liftsUsageLogs = pgTable('lifts_usage_logs', {
+  id: serial('id').primaryKey(),
+  agentId: integer('agent_id').references(() => agents.id).notNull(),
+  liftsUsed: integer('lifts_used').notNull(),
+  action: varchar('action', { length: 100 }), // e.g., "view_kitwe_searches", "access_operator_metrics"
+  searchAnalyticsId: integer('search_analytics_id').references(() => searchAnalytics.id),
+  metadata: text('metadata'), // JSON for additional context
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+// Agent Notifications
+export const agentNotifications = pgTable('agent_notifications', {
+  id: serial('id').primaryKey(),
+  agentId: integer('agent_id').references(() => agents.id).notNull(),
+  notificationType: notificationTypeEnum('notification_type').notNull(),
+  bookingId: integer('booking_id').references(() => bookings.id),
+  title: varchar('title', { length: 255 }).notNull(),
+  message: text('message').notNull(),
+  isRead: boolean('is_read').default(false),
+  smsSent: boolean('sms_sent').default(false),
+  smsSentAt: timestamp('sms_sent_at'),
+  smsDeliveryStatus: varchar('sms_delivery_status', { length: 50 }),
+  actionUrl: varchar('action_url', { length: 500 }),
+  createdAt: timestamp('created_at').defaultNow(),
+  readAt: timestamp('read_at'),
+});
+
+// Operator Analytics (aggregated metrics for agents)
+export const operatorAnalytics = pgTable('operator_analytics', {
+  id: serial('id').primaryKey(),
+  operatorId: integer('operator_id').references(() => operators.id).notNull(),
+  date: varchar('date', { length: 10 }).notNull(), // YYYY-MM-DD
+  totalSearches: integer('total_searches').default(0),
+  totalBookings: integer('total_bookings').default(0),
+  totalRevenue: decimal('total_revenue', { precision: 10, scale: 2 }).default('0'),
+  conversionRate: decimal('conversion_rate', { precision: 5, scale: 2 }).default('0'), // percentage
+  popularRoutes: text('popular_routes'), // JSON array of routes
+  peakHours: text('peak_hours'), // JSON array of hours
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+// Booking Assignment History
+export const bookingAssignmentHistory = pgTable('booking_assignment_history', {
+  id: serial('id').primaryKey(),
+  bookingId: integer('booking_id').references(() => bookings.id).notNull(),
+  agentId: integer('agent_id').references(() => agents.id).notNull(),
+  assignedBy: integer('assigned_by').references(() => adminUsers.id),
+  assignmentStatus: assignmentStatusEnum('assignment_status').notNull(),
+  responseTime: integer('response_time'), // in seconds
+  rejectionReason: text('rejection_reason'),
+  escalated: boolean('escalated').default(false),
+  escalatedAt: timestamp('escalated_at'),
+  notificationSent: boolean('notification_sent').default(false),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+// Platform Admin Settings
+export const platformSettings = pgTable('platform_settings', {
+  id: serial('id').primaryKey(),
+  settingKey: varchar('setting_key', { length: 100 }).notNull().unique(),
+  settingValue: text('setting_value').notNull(), // JSON or plain text
+  description: text('description'),
+  category: varchar('category', { length: 50 }), // e.g., 'agents', 'notifications', 'lifts'
+  updatedBy: integer('updated_by').references(() => adminUsers.id),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+// Agent Leaderboard (cached/computed rankings)
+export const agentLeaderboard = pgTable('agent_leaderboard', {
+  id: serial('id').primaryKey(),
+  agentId: integer('agent_id').references(() => agents.id).notNull().unique(),
+  rank: integer('rank').notNull(),
+  totalBookings: integer('total_bookings').default(0),
+  totalRevenue: decimal('total_revenue', { precision: 10, scale: 2 }).default('0'),
+  avgResponseTime: integer('avg_response_time'), // in seconds
+  completionRate: decimal('completion_rate', { precision: 5, scale: 2 }).default('0'), // percentage
+  customerRating: decimal('customer_rating', { precision: 3, scale: 2 }), // out of 5
+  liftsEarned: integer('lifts_earned').default(0),
+  lastCalculatedAt: timestamp('last_calculated_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+// Type exports for new tables
+export type AgentOperatorAssignment = typeof agentOperatorAssignments.$inferSelect;
+export type NewAgentOperatorAssignment = typeof agentOperatorAssignments.$inferInsert;
+export type AgentLifts = typeof agentLifts.$inferSelect;
+export type NewAgentLifts = typeof agentLifts.$inferInsert;
+export type LiftsTransaction = typeof liftsTransactions.$inferSelect;
+export type NewLiftsTransaction = typeof liftsTransactions.$inferInsert;
+export type LiftsUsageLog = typeof liftsUsageLogs.$inferSelect;
+export type NewLiftsUsageLog = typeof liftsUsageLogs.$inferInsert;
+export type AgentNotification = typeof agentNotifications.$inferSelect;
+export type NewAgentNotification = typeof agentNotifications.$inferInsert;
+export type OperatorAnalytics = typeof operatorAnalytics.$inferSelect;
+export type NewOperatorAnalytics = typeof operatorAnalytics.$inferInsert;
+export type BookingAssignmentHistory = typeof bookingAssignmentHistory.$inferSelect;
+export type NewBookingAssignmentHistory = typeof bookingAssignmentHistory.$inferInsert;
+export type PlatformSettings = typeof platformSettings.$inferSelect;
+export type NewPlatformSettings = typeof platformSettings.$inferInsert;
+export type AgentLeaderboard = typeof agentLeaderboard.$inferSelect;
+export type NewAgentLeaderboard = typeof agentLeaderboard.$inferInsert;
