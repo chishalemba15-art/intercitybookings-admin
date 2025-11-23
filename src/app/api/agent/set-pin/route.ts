@@ -2,10 +2,7 @@ import { db } from '@/lib/db';
 import { agents } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
-
-// Simulated PIN storage (in production, use secure hashing and database)
-// This is imported from login route for consistency
-const agentPINs = new Map<number, string>();
+import bcrypt from 'bcryptjs';
 
 export async function POST(request: Request) {
   try {
@@ -19,10 +16,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Validate PIN format (4-6 digits)
-    if (!/^\d{4,6}$/.test(pin)) {
+    // Validate PIN format (4 digits only)
+    if (!/^\d{4}$/.test(pin)) {
       return NextResponse.json(
-        { error: 'PIN must be 4-6 digits' },
+        { error: 'PIN must be exactly 4 digits' },
         { status: 400 }
       );
     }
@@ -64,8 +61,19 @@ export async function POST(request: Request) {
       );
     }
 
-    // Store PIN in memory map
-    agentPINs.set(parsedAgentId, pin);
+    // Hash the PIN using bcrypt
+    const pinHash = await bcrypt.hash(pin, 10);
+
+    // Update agent with PIN hash
+    await db
+      .update(agents)
+      .set({
+        pinHash,
+        updatedAt: new Date(),
+      })
+      .where(eq(agents.id, parsedAgentId));
+
+    console.log(`[PIN] Set for agent ${parsedAgentId}`);
 
     return NextResponse.json({
       message: 'PIN set successfully',
@@ -82,6 +90,3 @@ export async function POST(request: Request) {
     );
   }
 }
-
-// Export agentPINs so login route can access it
-export { agentPINs };
