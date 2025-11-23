@@ -63,9 +63,9 @@ export async function GET(
     }
 
     const account = floatAccount[0];
-    const balance = new Decimal(account.currentBalance.toString());
+    const balance = new Decimal(account.currentBalance?.toString() || '0');
 
-    if (balance.lessThan(COST_PER_REQUEST) || account.dailyQuotaRemaining <= 0) {
+    if (balance.lessThan(COST_PER_REQUEST) || (account.dailyQuotaRemaining || 0) <= 0) {
       return NextResponse.json(
         {
           error: 'Insufficient float or daily quota',

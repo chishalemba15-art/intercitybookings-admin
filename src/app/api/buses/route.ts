@@ -82,7 +82,7 @@ export async function POST(request: Request) {
         routeId,
         departureTime,
         arrivalTime,
-        price: price ? parseFloat(price) : 0,
+        price: price || '0',
         type,
         totalSeats,
         availableSeats: availableSeats ?? totalSeats,

@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { agentProcessedTickets, buses, operators } from '@/db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, and } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
@@ -26,16 +26,17 @@ export async function GET(request: Request) {
     }
 
     // Build query
-    let query = db
+    const conditions = status && ['pending', 'verified', 'rejected'].includes(status)
+      ? and(
+          eq(agentProcessedTickets.agentId, parsedAgentId),
+          eq(agentProcessedTickets.receiptVerificationStatus, status as any)
+        )
+      : eq(agentProcessedTickets.agentId, parsedAgentId);
+
+    const tickets = await db
       .select()
       .from(agentProcessedTickets)
-      .where(eq(agentProcessedTickets.agentId, parsedAgentId));
-
-    if (status && ['pending', 'verified', 'rejected'].includes(status)) {
-      query = query.where(eq(agentProcessedTickets.receiptVerificationStatus, status as any));
-    }
-
-    const tickets = await query
+      .where(conditions)
       .orderBy(desc(agentProcessedTickets.createdAt))
       .limit(limit);
 

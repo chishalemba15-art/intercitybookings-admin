@@ -41,7 +41,7 @@ export async function PUT(
         seatNumber,
         travelDate: new Date(travelDate),
         status,
-        totalAmount: parseFloat(totalAmount),
+        totalAmount: totalAmount,
         specialRequests: specialRequests || null,
         updatedAt: new Date(),
       })

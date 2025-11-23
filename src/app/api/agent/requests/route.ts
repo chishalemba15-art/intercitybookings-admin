@@ -42,7 +42,7 @@ export async function GET(request: Request) {
     const account = floatAccount[0];
 
     // Check if quota available
-    if (account.dailyQuotaRemaining <= 0) {
+    if ((account.dailyQuotaRemaining || 0) <= 0) {
       return NextResponse.json({
         requests: [],
         total: 0,

@@ -66,7 +66,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       agentId: parsedAgentId,
-      currentBalance: parseFloat(account.currentBalance.toString()),
+      currentBalance: parseFloat(account.currentBalance?.toString() || '0'),
       dailyQuotaRemaining: quotaRemaining,
       dailyQuotaLimit: account.dailyQuotaLimit,
       lastQuotaReset,

@@ -28,7 +28,7 @@ export async function PUT(
         description: description || null,
         logo: logo || null,
         color: color || 'bg-blue-600',
-        rating: rating ? parseFloat(rating) : null,
+        rating: rating || null,
         phone: phone || null,
         email: email || null,
         isActive,

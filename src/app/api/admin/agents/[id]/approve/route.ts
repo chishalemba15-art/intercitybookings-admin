@@ -76,7 +76,7 @@ export async function POST(
       });
     } else {
       // Update existing float account (add welcome bonus if not already added)
-      const existingBalance = parseFloat(existingFloat[0].currentBalance.toString());
+      const existingBalance = parseFloat(existingFloat[0].currentBalance?.toString() || '0');
       if (existingBalance === 0) {
         await db
           .update(agentFloat)

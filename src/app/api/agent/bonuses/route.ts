@@ -19,16 +19,17 @@ export async function GET(request: Request) {
 
     const parsedAgentId = parseInt(agentId);
 
-    let query = db
+    const conditions = unclaimed
+      ? and(
+          eq(agentBonuses.agentId, parsedAgentId),
+          eq(agentBonuses.claimed, false)
+        )
+      : eq(agentBonuses.agentId, parsedAgentId);
+
+    const bonuses = await db
       .select()
       .from(agentBonuses)
-      .where(eq(agentBonuses.agentId, parsedAgentId));
-
-    if (unclaimed) {
-      query = query.where(eq(agentBonuses.claimed, false));
-    }
-
-    const bonuses = await query;
+      .where(conditions);
 
     // Calculate total unclaimed bonus
     const totalUnclaimed = bonuses
@@ -129,8 +130,8 @@ export async function POST(request: Request) {
       .limit(1);
 
     if (floatAccount && floatAccount.length > 0) {
-      const currentBalance = new Decimal(floatAccount[0].currentBalance.toString());
-      const bonusAmount = new Decimal(bonusData.bonusAmountZmw.toString());
+      const currentBalance = new Decimal(floatAccount[0].currentBalance?.toString() || '0');
+      const bonusAmount = new Decimal(bonusData.bonusAmountZmw?.toString() || '0');
       const newBalance = currentBalance.plus(bonusAmount);
 
       await db

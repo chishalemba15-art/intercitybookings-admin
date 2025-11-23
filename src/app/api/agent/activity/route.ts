@@ -1,10 +1,10 @@
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-import { eq, desc, limit } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import * as schema from '@/db/schema';
 
 const sql = neon(process.env.DATABASE_URL!);
-const db = drizzle(sql, { schema });
+const db = drizzle(sql as any, { schema });
 
 export async function GET(request: Request) {
   try {

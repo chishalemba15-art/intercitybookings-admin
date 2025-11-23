@@ -72,7 +72,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const currentBalance = new Decimal(floatAccount[0].currentBalance.toString());
+    const currentBalance = new Decimal(floatAccount[0].currentBalance?.toString() || '0');
     const newBalance = currentBalance.plus(amount);
 
     // Update balance
@@ -80,8 +80,8 @@ export async function POST(request: Request) {
       .update(agentFloat)
       .set({
         currentBalance: newBalance.toString(),
-        dailyQuotaRemaining: floatAccount[0].dailyQuotaRemaining + requestsAllocated,
-        dailyQuotaLimit: floatAccount[0].dailyQuotaLimit + requestsAllocated,
+        dailyQuotaRemaining: (floatAccount[0].dailyQuotaRemaining || 0) + requestsAllocated,
+        dailyQuotaLimit: (floatAccount[0].dailyQuotaLimit || 0) + requestsAllocated,
         updatedAt: new Date(),
       })
       .where(eq(agentFloat.agentId, parsedAgentId));

@@ -68,13 +68,13 @@ export async function POST(
     }
 
     const account = floatAccount[0];
-    const balance = new Decimal(account.currentBalance.toString());
+    const balance = new Decimal(account.currentBalance?.toString() || '0');
 
     if (balance.lessThan(COST_PER_REQUEST)) {
       throw new Error('Insufficient float balance');
     }
 
-    if (account.dailyQuotaRemaining <= 0) {
+    if ((account.dailyQuotaRemaining || 0) <= 0) {
       throw new Error('Daily quota exhausted');
     }
 
@@ -85,7 +85,7 @@ export async function POST(
       .update(agentFloat)
       .set({
         currentBalance: newBalance.toString(),
-        dailyQuotaRemaining: account.dailyQuotaRemaining - 1,
+        dailyQuotaRemaining: (account.dailyQuotaRemaining || 0) - 1,
         updatedAt: new Date(),
       })
       .where(eq(agentFloat.agentId, parsedAgentId));
@@ -123,7 +123,7 @@ export async function POST(
 
     const result = {
       newBalance: newBalance.toString(),
-      quotaRemaining: account.dailyQuotaRemaining - 1,
+      quotaRemaining: (account.dailyQuotaRemaining || 0) - 1,
     };
 
     return NextResponse.json({

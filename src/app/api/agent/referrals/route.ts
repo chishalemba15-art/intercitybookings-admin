@@ -35,7 +35,7 @@ export async function GET(request: Request) {
     // Calculate bonuses
     const bonusEarned = referralsMade
       .filter((r) => r.status === 'credited')
-      .reduce((sum, r) => sum + parseFloat(r.bonusZmw.toString()), 0);
+      .reduce((sum, r) => sum + parseFloat(r.bonusZmw?.toString() || '0'), 0);
 
     return NextResponse.json({
       agentId: parsedAgentId,
@@ -153,7 +153,7 @@ export async function POST(request: Request) {
       .limit(1);
 
     if (referrerFloat && referrerFloat.length > 0) {
-      const currentBalance = new Decimal(referrerFloat[0].currentBalance.toString());
+      const currentBalance = new Decimal(referrerFloat[0].currentBalance?.toString() || '0');
       const newBalance = currentBalance.plus(REFERRAL_BONUS);
 
       await db
@@ -173,7 +173,7 @@ export async function POST(request: Request) {
       .limit(1);
 
     if (referredFloat && referredFloat.length > 0) {
-      const currentBalance = new Decimal(referredFloat[0].currentBalance.toString());
+      const currentBalance = new Decimal(referredFloat[0].currentBalance?.toString() || '0');
       const newBalance = currentBalance.plus(REFERRAL_BONUS);
 
       await db

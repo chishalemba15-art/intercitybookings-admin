@@ -8,15 +8,15 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status'); // pending, verified, rejected
 
-    let query = db
+    const query = db
       .select()
       .from(agentProcessedTickets);
 
-    if (status && ['pending', 'verified', 'rejected'].includes(status)) {
-      query = query.where(eq(agentProcessedTickets.receiptVerificationStatus, status as any));
-    }
+    const queryWithFilter = status && ['pending', 'verified', 'rejected'].includes(status)
+      ? query.where(eq(agentProcessedTickets.receiptVerificationStatus, status as any))
+      : query;
 
-    const tickets = await query
+    const tickets = await queryWithFilter
       .orderBy(desc(agentProcessedTickets.createdAt));
 
     // Enrich with agent names and request details

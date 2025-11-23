@@ -38,7 +38,7 @@ export async function PUT(
         routeId,
         departureTime,
         arrivalTime,
-        price: price ? parseFloat(price) : undefined,
+        price: price || undefined,
         type,
         totalSeats,
         availableSeats,

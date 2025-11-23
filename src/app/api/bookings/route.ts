@@ -98,7 +98,7 @@ export async function POST(request: Request) {
         seatNumber,
         travelDate: new Date(travelDate),
         status: status || 'pending',
-        totalAmount: parseFloat(totalAmount),
+        totalAmount: totalAmount,
         specialRequests: specialRequests || null,
       })
       .returning();

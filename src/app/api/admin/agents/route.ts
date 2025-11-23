@@ -8,13 +8,12 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
 
-    let query = db.select().from(agents);
+    const query = db.select().from(agents);
+    const queryWithFilter = status && ['pending_review', 'approved', 'suspended', 'rejected'].includes(status)
+      ? query.where(eq(agents.status, status as any))
+      : query;
 
-    if (status && ['pending_review', 'approved', 'suspended', 'rejected'].includes(status)) {
-      query = query.where(eq(agents.status, status as any));
-    }
-
-    const agentList = await query.orderBy(desc(agents.createdAt));
+    const agentList = await queryWithFilter.orderBy(desc(agents.createdAt));
 
     return NextResponse.json(agentList);
   } catch (error) {

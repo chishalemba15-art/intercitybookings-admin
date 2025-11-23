@@ -93,8 +93,8 @@ export async function GET(request: Request) {
       currentTier: tierData.tier,
       tierLabel: tierConfig.label,
       totalRequestsCompleted: tierData.totalRequestsCompleted,
-      totalRevenue: parseFloat(tierData.totalRevenue.toString()),
-      costPerRequest: parseFloat(tierData.costPerRequest.toString()),
+      totalRevenue: parseFloat(tierData.totalRevenue?.toString() || '0'),
+      costPerRequest: parseFloat(tierData.costPerRequest?.toString() || '0'),
       bonusPercentage: tierData.bonusPercentage,
       tiers: Object.entries(TIERS).map(([key, config]) => ({
         tier: key,
@@ -103,18 +103,18 @@ export async function GET(request: Request) {
         costPerRequest: config.costPerRequest.toString(),
         bonusPercentage: config.bonusPercentage,
         benefits: config.benefits,
-        unlocked: tierData.totalRequestsCompleted >= config.minRequests,
+        unlocked: (tierData.totalRequestsCompleted || 0) >= config.minRequests,
       })),
       nextTierIn: (() => {
         const nextTier = Object.entries(TIERS).find(
           ([_, config]) =>
-            config.minRequests > tierData.totalRequestsCompleted &&
+            config.minRequests > (tierData.totalRequestsCompleted || 0) &&
             config.minRequests >= TIERS[tierData.tier as keyof typeof TIERS].minRequests
         );
         return nextTier
           ? {
               tier: nextTier[0],
-              requestsNeeded: nextTier[1].minRequests - tierData.totalRequestsCompleted,
+              requestsNeeded: nextTier[1].minRequests - (tierData.totalRequestsCompleted || 0),
             }
           : null;
       })(),

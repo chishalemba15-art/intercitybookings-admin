@@ -13,7 +13,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 const sql = neon(process.env.DATABASE_URL);
-const db = drizzle(sql, { schema });
+const db = drizzle(sql as any, { schema });
 
 async function seed() {
   try {
@@ -68,7 +68,7 @@ async function seed() {
           email: 'info@citycruiser.zm',
           isActive: true,
         },
-      ])
+      ] as any)
       .onConflictDoNothing();
 
     // 2. Create Routes (Zambian intercity routes)
@@ -152,7 +152,7 @@ async function seed() {
         routeId: allRoutes[0].id,
         departureTime: '06:00',
         arrivalTime: '14:00',
-        price: 850,
+        price: '850',
         type: 'luxury' as const,
         totalSeats: 32,
         availableSeats: 28,
@@ -164,7 +164,7 @@ async function seed() {
         routeId: allRoutes[0].id,
         departureTime: '14:00',
         arrivalTime: '22:00',
-        price: 850,
+        price: '850',
         type: 'luxury' as const,
         totalSeats: 32,
         availableSeats: 15,
@@ -176,7 +176,7 @@ async function seed() {
         routeId: allRoutes[0].id,
         departureTime: '07:30',
         arrivalTime: '15:30',
-        price: 650,
+        price: '650',
         type: 'standard' as const,
         totalSeats: 52,
         availableSeats: 40,
@@ -188,7 +188,7 @@ async function seed() {
         routeId: allRoutes[1].id,
         departureTime: '05:30',
         arrivalTime: '13:00',
-        price: 750,
+        price: '750',
         type: 'luxury' as const,
         totalSeats: 40,
         availableSeats: 32,
@@ -200,7 +200,7 @@ async function seed() {
         routeId: allRoutes[1].id,
         departureTime: '08:00',
         arrivalTime: '15:30',
-        price: 580,
+        price: '580',
         type: 'standard' as const,
         totalSeats: 52,
         availableSeats: 22,
@@ -212,7 +212,7 @@ async function seed() {
         routeId: allRoutes[2].id,
         departureTime: '06:00',
         arrivalTime: '14:00',
-        price: 620,
+        price: '620',
         type: 'standard' as const,
         totalSeats: 48,
         availableSeats: 38,
@@ -224,7 +224,7 @@ async function seed() {
         routeId: allRoutes[2].id,
         departureTime: '15:00',
         arrivalTime: '23:00',
-        price: 900,
+        price: '900',
         type: 'luxury' as const,
         totalSeats: 32,
         availableSeats: 25,
@@ -236,7 +236,7 @@ async function seed() {
         routeId: allRoutes[4].id,
         departureTime: '07:00',
         arrivalTime: '09:00',
-        price: 250,
+        price: '250',
         type: 'standard' as const,
         totalSeats: 60,
         availableSeats: 45,
@@ -248,7 +248,7 @@ async function seed() {
         routeId: allRoutes[4].id,
         departureTime: '14:00',
         arrivalTime: '16:00',
-        price: 240,
+        price: '240',
         type: 'standard' as const,
         totalSeats: 56,
         availableSeats: 35,
@@ -260,7 +260,7 @@ async function seed() {
         routeId: allRoutes[3].id,
         departureTime: '18:00',
         arrivalTime: '03:00',
-        price: 700,
+        price: '700',
         type: 'standard' as const,
         totalSeats: 48,
         availableSeats: 28,
@@ -286,7 +286,7 @@ async function seed() {
         seatNumber: 'A1',
         travelDate: new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
         status: 'confirmed' as const,
-        totalAmount: 850,
+        totalAmount: '850',
         specialRequests: 'Window seat preferred',
       },
       {
@@ -298,7 +298,7 @@ async function seed() {
         seatNumber: 'A2',
         travelDate: new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000),
         status: 'confirmed' as const,
-        totalAmount: 850,
+        totalAmount: '850',
         specialRequests: null,
       },
       {
@@ -310,7 +310,7 @@ async function seed() {
         seatNumber: 'B5',
         travelDate: new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000),
         status: 'confirmed' as const,
-        totalAmount: 650,
+        totalAmount: '650',
         specialRequests: 'Aisle seat',
       },
       {
@@ -322,7 +322,7 @@ async function seed() {
         seatNumber: 'C3',
         travelDate: new Date(new Date().getTime() + 1 * 24 * 60 * 60 * 1000),
         status: 'pending' as const,
-        totalAmount: 850,
+        totalAmount: '850',
         specialRequests: null,
       },
       {
@@ -334,7 +334,7 @@ async function seed() {
         seatNumber: 'D7',
         travelDate: new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000),
         status: 'completed' as const,
-        totalAmount: 750,
+        totalAmount: '750',
         specialRequests: 'Accessible seating',
       },
     ];
@@ -349,7 +349,7 @@ async function seed() {
     const payments = [
       {
         bookingId: allBookings[0].id,
-        amount: 850,
+        amount: '850',
         paymentMethod: 'airtel_money' as const,
         paymentStatus: 'completed' as const,
         transactionRef: 'ATL202411001',
@@ -358,7 +358,7 @@ async function seed() {
       },
       {
         bookingId: allBookings[1].id,
-        amount: 850,
+        amount: '850',
         paymentMethod: 'mtn_momo' as const,
         paymentStatus: 'completed' as const,
         transactionRef: 'MTN202411001',
@@ -367,7 +367,7 @@ async function seed() {
       },
       {
         bookingId: allBookings[2].id,
-        amount: 650,
+        amount: '650',
         paymentMethod: 'airtel_money' as const,
         paymentStatus: 'completed' as const,
         transactionRef: 'ATL202411002',
@@ -376,7 +376,7 @@ async function seed() {
       },
       {
         bookingId: allBookings[3].id,
-        amount: 850,
+        amount: '850',
         paymentMethod: 'mtn_momo' as const,
         paymentStatus: 'pending' as const,
         transactionRef: 'MTN202411002',
@@ -755,8 +755,8 @@ async function seed() {
 
     const transactions = [
       // Agent 1 transactions
-      {
-        agentId: agent1?.id,
+      agent1 && {
+        agentId: agent1.id,
         transactionType: 'purchase' as const,
         amountZmw: '100.00',
         requestsAllocated: 50,
@@ -766,8 +766,8 @@ async function seed() {
         notes: 'Float purchase via MTN Mobile Money',
         createdAt: new Date(new Date().getTime() - 5 * 24 * 60 * 60 * 1000),
       },
-      {
-        agentId: agent1?.id,
+      agent1 && {
+        agentId: agent1.id,
         transactionType: 'purchase' as const,
         amountZmw: '50.00',
         requestsAllocated: 25,
@@ -777,8 +777,8 @@ async function seed() {
         notes: 'Float purchase via Airtel Money',
         createdAt: new Date(new Date().getTime() - 10 * 24 * 60 * 60 * 1000),
       },
-      {
-        agentId: agent1?.id,
+      agent1 && {
+        agentId: agent1.id,
         transactionType: 'usage' as const,
         amountZmw: '10.00',
         requestsAllocated: -5,
@@ -787,8 +787,8 @@ async function seed() {
         createdAt: new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000),
       },
       // Agent 2 transactions
-      {
-        agentId: agent2?.id,
+      agent2 && {
+        agentId: agent2.id,
         transactionType: 'purchase' as const,
         amountZmw: '75.00',
         requestsAllocated: 37,
@@ -798,8 +798,8 @@ async function seed() {
         notes: 'Float purchase via MTN Mobile Money',
         createdAt: new Date(new Date().getTime() - 3 * 24 * 60 * 60 * 1000),
       },
-      {
-        agentId: agent2?.id,
+      agent2 && {
+        agentId: agent2.id,
         transactionType: 'usage' as const,
         amountZmw: '15.00',
         requestsAllocated: -7,
@@ -807,23 +807,23 @@ async function seed() {
         notes: 'Float deducted for ticket requests',
         createdAt: new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000),
       },
-    ];
+    ].filter(Boolean);
 
     await db
       .insert(schema.agentFloatTransactions)
-      .values(transactions)
+      .values(transactions as any)
       .onConflictDoNothing();
 
     // 15. Create Processed Tickets (completed requests)
     console.log('🎫 Creating processed tickets...');
     const allTickets = await db.select().from(schema.ticketRequests);
     const processedTickets = [
-      {
-        ticketRequestId: allTickets[0]?.id,
-        agentId: agent1?.id,
+      allTickets[0] && agent1 && allBuses[0] && {
+        ticketRequestId: allTickets[0].id,
+        agentId: agent1.id,
         passengerName: 'John Mwale',
         seatNumber: 'A1',
-        busId: allBuses[0]?.id,
+        busId: allBuses[0].id,
         bookingReference: 'ICB202411006',
         receiptImageUrl: 'https://via.placeholder.com/400x300?text=Receipt+001',
         receiptVerificationStatus: 'verified' as const,
@@ -833,18 +833,18 @@ async function seed() {
         notesToUser: 'Booking confirmed for Lusaka-Kitwe route',
         createdAt: new Date(new Date().getTime() - 3 * 24 * 60 * 60 * 1000),
       },
-    ];
+    ].filter(Boolean);
 
     await db
       .insert(schema.agentProcessedTickets)
-      .values(processedTickets)
+      .values(processedTickets as any)
       .onConflictDoNothing();
 
     // 16. Create Performance Tiers
     console.log('📊 Creating performance tiers...');
     const performanceTiers = [
-      {
-        agentId: agent1?.id,
+      agent1 && {
+        agentId: agent1.id,
         tier: 'silver',
         totalRequestsCompleted: 15,
         totalRevenue: '30.00',
@@ -852,8 +852,8 @@ async function seed() {
         bonusPercentage: 10,
         createdAt: new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000),
       },
-      {
-        agentId: agent2?.id,
+      agent2 && {
+        agentId: agent2.id,
         tier: 'bronze',
         totalRequestsCompleted: 8,
         totalRevenue: '16.00',
@@ -861,18 +861,18 @@ async function seed() {
         bonusPercentage: 0,
         createdAt: new Date(new Date().getTime() - 20 * 24 * 60 * 60 * 1000),
       },
-    ];
+    ].filter(Boolean);
 
     await db
       .insert(schema.agentPerformanceTiers)
-      .values(performanceTiers)
+      .values(performanceTiers as any)
       .onConflictDoNothing();
 
     // 17. Create Bonuses
     console.log('🎁 Creating agent bonuses...');
     const bonuses = [
-      {
-        agentId: agent1?.id,
+      agent1 && {
+        agentId: agent1.id,
         bonusType: 'tier_upgrade',
         bonusAmountZmw: '25.00',
         description: 'Silver tier achievement bonus',
@@ -880,8 +880,8 @@ async function seed() {
         claimed: false,
         createdAt: new Date(new Date().getTime() - 5 * 24 * 60 * 60 * 1000),
       },
-      {
-        agentId: agent2?.id,
+      agent2 && {
+        agentId: agent2.id,
         bonusType: 'daily_challenge',
         bonusAmountZmw: '10.00',
         description: 'Daily challenge completion bonus',
@@ -889,55 +889,55 @@ async function seed() {
         claimed: false,
         createdAt: new Date(),
       },
-    ];
+    ].filter(Boolean);
 
     await db
       .insert(schema.agentBonuses)
-      .values(bonuses)
+      .values(bonuses as any)
       .onConflictDoNothing();
 
     // 18. Create Referral Records
     console.log('🤝 Creating agent referrals...');
     const referrals = [
-      {
-        referrerAgentId: agent1?.id,
-        referredAgentId: agent2?.id,
+      agent1 && agent2 && {
+        referrerAgentId: agent1.id,
+        referredAgentId: agent2.id,
         bonusZmw: '50.00',
         status: 'credited',
         createdAt: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000),
         creditedAt: new Date(new Date().getTime() - 6 * 24 * 60 * 60 * 1000),
       },
-    ];
+    ].filter(Boolean);
 
     await db
       .insert(schema.agentReferrals)
-      .values(referrals)
+      .values(referrals as any)
       .onConflictDoNothing();
 
     // 19. Create Daily Quota Logs
     console.log('📅 Creating daily quota logs...');
     const quotaLogs = [
-      {
-        agentId: agent1?.id,
+      agent1 && {
+        agentId: agent1.id,
         date: new Date().toISOString().split('T')[0],
         requestsViewed: 5,
         quotaLimit: 25,
         floatBalanceOnDate: '235.00',
         createdAt: new Date(),
       },
-      {
-        agentId: agent2?.id,
+      agent2 && {
+        agentId: agent2.id,
         date: new Date().toISOString().split('T')[0],
         requestsViewed: 3,
         quotaLimit: 25,
         floatBalanceOnDate: '235.00',
         createdAt: new Date(),
       },
-    ];
+    ].filter(Boolean);
 
     await db
       .insert(schema.agentDailyQuotaLogs)
-      .values(quotaLogs)
+      .values(quotaLogs as any)
       .onConflictDoNothing();
 
     console.log('✅ Database seeded successfully!');
