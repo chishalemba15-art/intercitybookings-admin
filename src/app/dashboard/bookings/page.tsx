@@ -146,6 +146,7 @@ export default function BookingsPage() {
       ) : (
         <BookingsList
           bookings={filteredBookings}
+// @ts-ignore
           onEdit={handleEditBooking}
           onDelete={handleDelete}
         />

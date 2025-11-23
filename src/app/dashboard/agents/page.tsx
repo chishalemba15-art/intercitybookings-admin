@@ -4,26 +4,7 @@ import { useEffect, useState } from 'react';
 import AgentApplications from '@/components/agents/AgentApplications';
 import ApprovedAgents from '@/components/agents/ApprovedAgents';
 
-interface Agent {
-  id: number;
-  phoneNumber: string;
-  firstName: string;
-  lastName: string;
-  email: string | null;
-  idType: string;
-  idNumber: string;
-  profilePictureUrl: string | null;
-  locationCity: string | null;
-  locationAddress: string | null;
-  referralCode: string | null;
-  status: 'pending_review' | 'approved' | 'suspended' | 'rejected';
-  approvedAt: Date | null;
-  rejectionReason: string | null;
-  suspendedAt: Date | null;
-  suspensionReason: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
+
 
 type TabType = 'pending' | 'approved' | 'suspended';
 

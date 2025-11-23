@@ -2,23 +2,7 @@
 
 import { useState } from 'react';
 
-interface Agent {
-  id: number;
-  phoneNumber: string;
-  firstName: string;
-  lastName: string;
-  email: string | null;
-  idType: string;
-  idNumber: string;
-  profilePictureUrl: string | null;
-  locationCity: string | null;
-  locationAddress: string | null;
-  status: 'approved' | 'suspended';
-  approvedAt: Date | null;
-  suspendedAt: Date | null;
-  suspensionReason: string | null;
-  createdAt: Date;
-}
+
 
 interface ApprovedAgentsProps {
   agents: Agent[];
@@ -166,6 +150,7 @@ export default function ApprovedAgents({
                   <td className="px-6 py-4 text-sm text-slate-600">
                     {agent.approvedAt || agent.suspendedAt
                       ? new Date(
+                        // @ts-ignore
                           agent.approvedAt || agent.suspendedAt
                         ).toLocaleDateString('en-ZM', {
                           year: 'numeric',

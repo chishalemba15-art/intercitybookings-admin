@@ -1,4 +1,3 @@
-'use client';
 
 import { useState } from 'react';
 import { Route } from '@/db/schema';
@@ -14,8 +13,8 @@ export default function RouteForm({ route, onClose, onSave }: RouteFormProps) {
   const [formData, setFormData] = useState({
     fromCity: route?.fromCity ?? '',
     toCity: route?.toCity ?? '',
-    distance: route?.distance ?? '',
-    estimatedDuration: route?.estimatedDuration ?? '',
+    distance: route?.distance?.toString() ?? '',
+    estimatedDuration: route?.estimatedDuration?.toString() ?? '',
     isActive: route?.isActive ?? true,
   });
 
