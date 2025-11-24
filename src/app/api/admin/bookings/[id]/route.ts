@@ -89,7 +89,7 @@ export async function GET(
 
     // Get available agents for this operator (with error handling)
     // Agents can be: 1) tied to this operator or 2) independent agents assigned to this operator
-    let availableAgents = [];
+    let availableAgents: any[] = [];
     try {
       if (booking.operatorId) {
         availableAgents = await db
@@ -129,7 +129,7 @@ export async function GET(
     }
 
     // Get assignment history for this booking (with error handling)
-    let assignmentHistory = [];
+    let assignmentHistory: any[] = [];
     try {
       assignmentHistory = await db
         .select({
@@ -153,7 +153,7 @@ export async function GET(
     }
 
     // Get currently assigned agent details if any (with error handling)
-    let assignedAgent = null;
+    let assignedAgent: any = null;
     try {
       if (booking.assignedAgentId) {
         const agentData = await db
