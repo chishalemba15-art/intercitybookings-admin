@@ -176,6 +176,14 @@ export const searchAnalytics = pgTable('search_analytics', {
   userPhone: varchar('user_phone', { length: 20 }),
   sessionId: varchar('session_id', { length: 100 }),
   ipAddress: varchar('ip_address', { length: 50 }),
+  // Geolocation fields
+  latitude: decimal('latitude', { precision: 10, scale: 8 }),
+  longitude: decimal('longitude', { precision: 11, scale: 8 }),
+  city: varchar('city', { length: 100 }),
+  country: varchar('country', { length: 100 }),
+  // ML extracted data
+  extractedLocation: varchar('extracted_location', { length: 255 }), // Location extracted by ML from query
+  searchIntent: varchar('search_intent', { length: 100 }), // ML-classified intent (booking, price_check, schedule_check, etc.)
   createdAt: timestamp('created_at').defaultNow(),
 });
 
