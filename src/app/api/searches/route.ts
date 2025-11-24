@@ -117,7 +117,7 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       data: {
-        recentSearches: recentSearches.map(search => ({
+        recentSearches: (recentSearches || []).map(search => ({
           id: search.id,
           query: search.searchQuery,
           destination: search.destination,
@@ -139,28 +139,28 @@ export async function GET() {
           uniqueUsers: parseInt(searchStats[0]?.uniqueUsers as any) || 0,
           avgResultsCount: parseFloat(searchStats[0]?.avgResultsCount as any) || 0,
         },
-        topDestinations: topDestinations.map(dest => ({
+        topDestinations: (topDestinations || []).map(dest => ({
           destination: dest.destination,
           searchCount: parseInt(dest.searchCount as any) || 0,
           uniqueUsers: parseInt(dest.uniqueUsers as any) || 0,
         })),
-        geographicDistribution: geographicDistribution.map(geo => ({
+        geographicDistribution: (geographicDistribution || []).map(geo => ({
           city: geo.city,
           country: geo.country,
           searchCount: parseInt(geo.searchCount as any) || 0,
           latitude: geo.latitude ? parseFloat(geo.latitude as string) : null,
           longitude: geo.longitude ? parseFloat(geo.longitude as string) : null,
         })),
-        hourlyTrends: hourlyTrends.map(trend => ({
+        hourlyTrends: (hourlyTrends || []).map(trend => ({
           hour: trend.hour,
           searchCount: parseInt(trend.searchCount as any) || 0,
         })),
         mlInsights: {
-          intentDistribution: intentDistribution.map(intent => ({
+          intentDistribution: (intentDistribution || []).map(intent => ({
             intent: intent.intent,
             count: parseInt(intent.count as any) || 0,
           })),
-          topExtractedLocations: topExtractedLocations.map(loc => ({
+          topExtractedLocations: (topExtractedLocations || []).map(loc => ({
             location: loc.location,
             count: parseInt(loc.count as any) || 0,
           })),
