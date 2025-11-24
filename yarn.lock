@@ -28,20 +28,20 @@
     "@esbuild-kit/core-utils" "^3.3.2"
     get-tsconfig "^4.7.0"
 
-"@esbuild/darwin-arm64@0.18.20":
+"@esbuild/linux-x64@0.18.20":
   version "0.18.20"
-  resolved "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.18.20.tgz"
-  integrity sha512-bxRHW5kHU38zS2lPTPOyuyTm+S+eobPUnTNkdJEfAddYgEcll4xkT8DB9d2008DtTbl7uJag2HuE5NZAZgnNEA==
+  resolved "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.18.20.tgz"
+  integrity sha512-UYqiqemphJcNsFEskc73jQ7B9jgwjWrSayxawS6UVFZGWrAAtkzjxSqnoclCXxWtfwLdzU+vTpcNYhpn43uP1w==
 
-"@esbuild/darwin-arm64@0.19.12":
+"@esbuild/linux-x64@0.19.12":
   version "0.19.12"
-  resolved "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.19.12.tgz"
-  integrity sha512-B6IeSgZgtEzGC42jsI+YYu9Z3HKRxp8ZT3cqhvliEHovq8HSX2YX8lNocDn79gCKJXOSaEot9MVYky7AKjCs8g==
+  resolved "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.19.12.tgz"
+  integrity sha512-B71g1QpxfwBvNrfyJdVDexenDIt1CiDN1TIXLbhOw0KhJzE78KIFGX6OJ9MrtC0oOqMWf+0xop4qEU8JrJTwCg==
 
-"@esbuild/darwin-arm64@0.25.12":
+"@esbuild/linux-x64@0.25.12":
   version "0.25.12"
-  resolved "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.25.12.tgz"
-  integrity sha512-N3zl+lxHCifgIlcMUP5016ESkeQjLj/959RxxNYIthIg+CQHInujFuXeWbWMgnTo4cp5XVHqFPmpyu9J65C1Yg==
+  resolved "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.25.12.tgz"
+  integrity sha512-uqZMTLr/zR/ed4jIGnwSLkaHmPjOjJvnm6TVVitAa08SLS9Z0VM8wIRx7gWbJB5/J54YuIMInDquWyYvQLZkgw==
 
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.7.0":
   version "4.9.0"
@@ -89,6 +89,24 @@
   version "3.10.0"
   resolved "https://registry.npmjs.org/@hookform/resolvers/-/resolvers-3.10.0.tgz"
   integrity sha512-79Dv+3mDF7i+2ajj7SkypSKHhl1cbln1OGavqrsF7p6mbUv11xpqpacPsGDCTRvCSjEEIez2ef1NveSVL3b0Ag==
+
+"@huggingface/inference@^4.13.3":
+  version "4.13.3"
+  resolved "https://registry.npmjs.org/@huggingface/inference/-/inference-4.13.3.tgz"
+  integrity sha512-ZpyIlO9Xd0sDiD3QZSQMsJ19iFXYOHHxrgA6pK5Mh5RMY27XlnbLNhazAAaBsmen8vWG6SlGHlyjl7kvjlNoqQ==
+  dependencies:
+    "@huggingface/jinja" "^0.5.1"
+    "@huggingface/tasks" "^0.19.63"
+
+"@huggingface/jinja@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.npmjs.org/@huggingface/jinja/-/jinja-0.5.1.tgz"
+  integrity sha512-yUZLld4lrM9iFxHCwFQ7D1HW2MWMwSbeB7WzWqFYDWK+rEb+WldkLdAJxUPOmgICMHZLzZGVcVjFh3w/YGubng==
+
+"@huggingface/tasks@^0.19.63":
+  version "0.19.64"
+  resolved "https://registry.npmjs.org/@huggingface/tasks/-/tasks-0.19.64.tgz"
+  integrity sha512-uF1PGQp2lLh1Z9YpQWNz2xKeWuKNDFHma3gIWsF7AP8WD1bWYGfS7np0EyqOHBxti40LI6xGGq96JEwI1n7G/Q==
 
 "@humanwhocodes/config-array@^0.13.0":
   version "0.13.0"
@@ -166,10 +184,15 @@
   dependencies:
     glob "10.3.10"
 
-"@next/swc-darwin-arm64@14.2.33":
+"@next/swc-linux-x64-gnu@14.2.33":
   version "14.2.33"
-  resolved "https://registry.npmjs.org/@next/swc-darwin-arm64/-/swc-darwin-arm64-14.2.33.tgz"
-  integrity sha512-HqYnb6pxlsshoSTubdXKu15g3iivcbsMXg4bYpjL2iS/V6aQot+iyF4BUc2qA/J/n55YtvE4PHMKWBKGCF/+wA==
+  resolved "https://registry.npmjs.org/@next/swc-linux-x64-gnu/-/swc-linux-x64-gnu-14.2.33.tgz"
+  integrity sha512-FnFn+ZBgsVMbGDsTqo8zsnRzydvsGV8vfiWwUo1LD8FTmPTdV+otGSWKc4LJec0oSexFnCYVO4hX8P8qQKaSlg==
+
+"@next/swc-linux-x64-musl@14.2.33":
+  version "14.2.33"
+  resolved "https://registry.npmjs.org/@next/swc-linux-x64-musl/-/swc-linux-x64-musl-14.2.33.tgz"
+  integrity sha512-345tsIWMzoXaQndUTDv1qypDRiebFxGYx9pYkhwY4hBRaOLt8UGfiWKr9FSSHs25dFIf8ZqIFaPdy5MljdoawA==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -434,11 +457,6 @@
   version "1.3.0"
   resolved "https://registry.npmjs.org/@ungap/structured-clone/-/structured-clone-1.3.0.tgz"
   integrity sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==
-
-"@unrs/resolver-binding-darwin-arm64@1.11.1":
-  version "1.11.1"
-  resolved "https://registry.npmjs.org/@unrs/resolver-binding-darwin-arm64/-/resolver-binding-darwin-arm64-1.11.1.tgz"
-  integrity sha512-gPVA1UjRu1Y/IsB/dQEsp2V1pm44Of6+LWvbLc9SDk1c2KhhDRDBUkQCYVWe6f26uJb3fOK8saWMgtX8IrMk3g==
 
 acorn-jsx@^5.3.2:
   version "5.3.2"
@@ -1750,11 +1768,6 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
-
-fsevents@~2.3.2, fsevents@~2.3.3:
-  version "2.3.3"
-  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz"
-  integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
 
 function-bind@^1.1.2:
   version "1.1.2"
