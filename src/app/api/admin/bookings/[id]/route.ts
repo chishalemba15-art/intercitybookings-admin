@@ -89,10 +89,11 @@ export async function GET(
 
     // Get available agents for this operator (with error handling)
     // Agents can be: 1) tied to this operator or 2) independent agents assigned to this operator
-    let availableAgents: any[] = [];
-    try {
-      if (booking.operatorId) {
-        availableAgents = await db
+    const getAvailableAgents = async () => {
+      try {
+        if (!booking.operatorId) return [];
+
+        return await db
           .select({
             id: agents.id,
             phoneNumber: agents.phoneNumber,
@@ -122,54 +123,61 @@ export async function GET(
               )
             )
           );
+      } catch (error) {
+        console.error('Error fetching available agents:', error);
+        return [];
       }
-    } catch (error) {
-      console.error('Error fetching available agents:', error);
-      // Continue without agents if query fails
-    }
+    };
 
     // Get assignment history for this booking (with error handling)
-    let assignmentHistory: any[] = [];
-    try {
-      assignmentHistory = await db
-        .select({
-          id: bookingAssignmentHistory.id,
-          agentId: bookingAssignmentHistory.agentId,
-          agentName: agents.firstName,
-          agentLastName: agents.lastName,
-          assignmentStatus: bookingAssignmentHistory.assignmentStatus,
-          responseTime: bookingAssignmentHistory.responseTime,
-          rejectionReason: bookingAssignmentHistory.rejectionReason,
-          escalated: bookingAssignmentHistory.escalated,
-          escalatedAt: bookingAssignmentHistory.escalatedAt,
-          createdAt: bookingAssignmentHistory.createdAt,
-        })
-        .from(bookingAssignmentHistory)
-        .leftJoin(agents, eq(bookingAssignmentHistory.agentId, agents.id))
-        .where(eq(bookingAssignmentHistory.bookingId, bookingId));
-    } catch (error) {
-      console.error('Error fetching assignment history:', error);
-      // Continue without history if query fails
-    }
+    const getAssignmentHistory = async () => {
+      try {
+        return await db
+          .select({
+            id: bookingAssignmentHistory.id,
+            agentId: bookingAssignmentHistory.agentId,
+            agentName: agents.firstName,
+            agentLastName: agents.lastName,
+            assignmentStatus: bookingAssignmentHistory.assignmentStatus,
+            responseTime: bookingAssignmentHistory.responseTime,
+            rejectionReason: bookingAssignmentHistory.rejectionReason,
+            escalated: bookingAssignmentHistory.escalated,
+            escalatedAt: bookingAssignmentHistory.escalatedAt,
+            createdAt: bookingAssignmentHistory.createdAt,
+          })
+          .from(bookingAssignmentHistory)
+          .leftJoin(agents, eq(bookingAssignmentHistory.agentId, agents.id))
+          .where(eq(bookingAssignmentHistory.bookingId, bookingId));
+      } catch (error) {
+        console.error('Error fetching assignment history:', error);
+        return [];
+      }
+    };
 
     // Get currently assigned agent details if any (with error handling)
-    let assignedAgent: any = null;
-    try {
-      if (booking.assignedAgentId) {
+    const getAssignedAgent = async () => {
+      try {
+        if (!booking.assignedAgentId) return null;
+
         const agentData = await db
           .select()
           .from(agents)
           .where(eq(agents.id, booking.assignedAgentId))
           .limit(1);
 
-        if (agentData.length > 0) {
-          assignedAgent = agentData[0];
-        }
+        return agentData.length > 0 ? agentData[0] : null;
+      } catch (error) {
+        console.error('Error fetching assigned agent:', error);
+        return null;
       }
-    } catch (error) {
-      console.error('Error fetching assigned agent:', error);
-      // Continue without assigned agent if query fails
-    }
+    };
+
+    // Execute all queries in parallel
+    const [availableAgents, assignmentHistory, assignedAgent] = await Promise.all([
+      getAvailableAgents(),
+      getAssignmentHistory(),
+      getAssignedAgent(),
+    ]);
 
     return NextResponse.json({
       booking: {
@@ -177,8 +185,8 @@ export async function GET(
         payment: paymentData.length > 0 ? paymentData[0] : null,
         assignedAgent,
       },
-      availableAgents: availableAgents || [],
-      assignmentHistory: assignmentHistory || [],
+      availableAgents,
+      assignmentHistory,
     });
   } catch (error) {
     console.error('Error fetching booking details:', error);
